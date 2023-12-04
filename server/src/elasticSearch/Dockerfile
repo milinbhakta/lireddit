@@ -8,6 +8,8 @@ COPY logstash.conf /logstash_dir/
 
 # RUN logstash-plugin install logstash-input-jdbc
 
+ENV LS_JAVA_OPTS="-Xmx256m -Xms256m"
+
 EXPOSE 9600
 
 CMD logstash -f /logstash_dir/logstash.conf

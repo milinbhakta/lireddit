@@ -1,7 +1,7 @@
 import elasticsearch from "elasticsearch";
 
 const client = new elasticsearch.Client({
-  host: "localhost:9200",
+  host: process.env.ELASTICSEARCH_URL,
   log: "error",
 });
 

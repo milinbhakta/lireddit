@@ -1,23 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import { AppProps } from "next/app";
-import { ThemeProvider, createTheme, useTheme } from "@material-ui/core/styles";
+import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "../styles/main.css";
-import { darkTheme } from "../theme";
-import { getDesignTokens, MyThemeProvider, getThemedComponents, deepmerge } from "../components/ThemeContext";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
-  const themeConfig = createTheme(darkTheme);
-  const upperTheme = useTheme();
-  const mode = upperTheme.palette.type;
-  const theme = React.useMemo(() => {
-    const designTokens = getDesignTokens(mode);
-    let newTheme = createTheme(designTokens);
-    newTheme = deepmerge(newTheme, getThemedComponents(newTheme));
-    return newTheme;
-  }, [mode]);
+  const theme = createTheme({
+    palette: {
+      type: "dark",
+      primary: {
+        main: "#2196F3", // green
+        light: "#BBDEFB",
+        dark: "#1976D2",
+        contrastText: "#FFFFFF",
+      },
+      secondary: {
+        main: "#8BC34A", // yellow
+      },
+      text: {
+        primary: "#FFF",
+        secondary: "#757575",
+      },
+      divider: "#BDBDBD",
+    },
+    typography: {
+      fontFamily: ["barlow", "sans-serif"].join(","),
+    },
+  });
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -35,14 +46,17 @@ export default function MyApp(props: AppProps) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
+        <link rel="preconnect" href="https://fonts.bunny.net" />
+        <link
+          href="https://fonts.bunny.net/css?family=barlow:100,400,500,500i,600,600i,700"
+          rel="stylesheet"
+        />
       </Head>
-      <MyThemeProvider>
-        <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </MyThemeProvider>
+
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
     </React.Fragment>
   );
 }

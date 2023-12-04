@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: alpha(theme.palette.common.white, 0.25),
       },
       marginLeft: 0,
-      width: "100%",
+      maxWidth: "500px",
     },
     searchIcon: {
       padding: theme.spacing(0, 2),
@@ -40,22 +40,18 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
       transition: theme.transitions.create("width"),
       width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        width: "12ch",
-        "&:focus": {
-          width: "20ch",
-        },
-      },
     },
     results: {
       position: "absolute",
       width: "100%",
-      backgroundColor: theme.palette.background.paper,
       borderRadius: theme.shape.borderRadius,
+      backgroundColor: alpha("#0097A7", 0.15),
       zIndex: 100,
     },
     main: {
       position: "relative",
+      maxWidth: "500px",
+      width: "100%",
     },
   })
 );

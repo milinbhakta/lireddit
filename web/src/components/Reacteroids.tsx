@@ -98,8 +98,8 @@ export default class Reacteroids extends Component<{ size: any }, IYoState> {
     }
 
     componentWillUnmount() {
-        window.removeEventListener('keyup', this.handleKeys);
-        window.removeEventListener('keydown', this.handleKeys);
+        window.removeEventListener('keyup', this.handleKeys.bind(this, false));
+        window.removeEventListener('keydown', this.handleKeys.bind(this, true));
     }
 
     update() {
@@ -202,11 +202,11 @@ export default class Reacteroids extends Component<{ size: any }, IYoState> {
         }
     }
 
-    createObject(item: any | Ship, group: string) {
+    createObject(item: any | Ship, group: keyof Reacteroids) {
         this[group].push(item);
     }
 
-    updateObjects(items: any[], group: string) {
+    updateObjects(items: any[], group: keyof Reacteroids) {
         let index = 0;
         for (let item of items) {
             if (item.delete) {

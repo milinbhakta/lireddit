@@ -1,22 +1,17 @@
 import { Form, Formik } from "formik";
-import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { useCreatePostMutation } from "../generated/graphql";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import { useIsAuth } from "../utils/useIsAuth";
 import { withApollo } from "../utils/withApollo";
-
 import TextField from "@material-ui/core/TextField";
-import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import { Layout } from "../components/Layout";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import { CardActions } from "@material-ui/core";
-import toast from 'react-hot-toast';
-
+import toast from "react-hot-toast";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,13 +26,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const CreatePost: React.FC<{}> = ({ }) => {
+const CreatePost: React.FC<{}> = ({}) => {
   const classes = useStyles();
   const router = useRouter();
   useIsAuth();
   const [createPost] = useCreatePostMutation();
 
-  const notify = () => toast.success('Post successfully created!', { position: "bottom-center" });
+  const notify = () =>
+    toast.success("Post successfully created!", { position: "bottom-center" });
 
   return (
     <Layout>

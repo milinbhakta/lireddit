@@ -29,7 +29,10 @@ const main = async () => {
     url: process.env.DATABASE_URL,
     logging: true,
     // synchronize: true,
-    migrations: [path.join(__dirname, "./migrations/*")],
+    migrations: [
+      path.join(__dirname, "./migrations/1597626060117-Initial.*"),
+      path.join(__dirname, "./migrations/1597424501158-MockPosts.*"),
+    ],
     entities: [Post, User, Updoot],
   });
   await conn.runMigrations();
@@ -58,7 +61,7 @@ const main = async () => {
         httpOnly: true,
         sameSite: "lax", // csrf
         secure: __prod__, // cookie only works in https
-        domain: __prod__ ? ".codeponder.com" : undefined,
+        domain: __prod__ ? ".milinbhakta.com" : undefined,
       },
       saveUninitialized: false,
       secret: "qowiueojwojfalksdjoqiwueo",

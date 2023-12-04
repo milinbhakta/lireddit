@@ -12,8 +12,8 @@ import {
 import { User } from "./User";
 import { Updoot } from "./Updoot";
 
-@ObjectType()
 @Entity()
+@ObjectType()
 export class Post extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()

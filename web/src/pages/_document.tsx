@@ -7,10 +7,10 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          {/* PWA primary color */}
+          <link rel="preconnect" href="https://fonts.bunny.net" />
           <link
+            href="https://fonts.bunny.net/css?family=barlow:100,400,500,500i,600,600i,700"
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
         </Head>
         <body>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { NextPage } from "next";
-import { Wrapper } from "../../components/Wrapper";
 import { Formik, Form } from "formik";
 import { toErrorMap } from "../../utils/toErrorMap";
 import {
@@ -21,7 +20,7 @@ const ChangePassword: NextPage = () => {
   const [changePassword] = useChangePasswordMutation();
   const [tokenError, setTokenError] = useState("");
   return (
-    <Wrapper variant="small">
+    <Box>
       <Formik
         initialValues={{ newPassword: "" }}
         onSubmit={async (values, { setErrors }) => {
@@ -87,7 +86,7 @@ const ChangePassword: NextPage = () => {
           </Form>
         )}
       </Formik>
-    </Wrapper>
+    </Box>
   );
 };
 
