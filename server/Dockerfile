@@ -1,23 +1,17 @@
-FROM node:14
+# Dockerfile for Server
 
-# Create app directory
+FROM node:14.15.4-alpine
+
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package.json ./
-COPY yarn.lock ./
+COPY package*.json ./
 
-RUN yarn
+RUN npm install
 
 COPY . .
-COPY .env.production .env
 
-RUN yarn build
+EXPOSE 4000
 
-ENV NODE_ENV production
+RUN npm run build
 
-EXPOSE 8080
-CMD [ "node", "dist/index.js" ]
-USER node
+CMD ["npm", "run", "start"]

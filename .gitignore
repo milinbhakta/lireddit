@@ -1,0 +1,13 @@
+# ignore files
+
+.vscode
+data
+redisdata
+web
+server/*
+web/node_modules
+web/.vscode
+web/.next
+web/out
+server/node_modules
+server/.vscode
