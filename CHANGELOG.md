@@ -1,3 +1,15 @@
+# v0.0.2 (Tue Dec 05 2023)
+
+#### ⚠️ Pushed to `main`
+
+- remove flask ([@milinbhakta](https://github.com/milinbhakta))
+
+#### Authors: 1
+
+- Milin Bhakta ([@milinbhakta](https://github.com/milinbhakta))
+
+---
+
 # v0.0.1 (Tue Dec 05 2023)
 
 :tada: This release contains work from a new contributor! :tada:
