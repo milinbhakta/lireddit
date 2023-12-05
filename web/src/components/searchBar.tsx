@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       width: "100%",
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: alpha("#0097A7", 0.15),
+      backgroundColor: alpha(theme.palette.primary.main, 0.65),
       zIndex: 100,
     },
     main: {
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const SearchBar: React.FC<SearchBarProps> = ({}) => {
+export const SearchBar: React.FC<SearchBarProps> = ({}): any => {
   const classes = useStyles();
   const [results, setResults] = useState([]);
   const [searchValue, setSearchValue] = useState("");
@@ -72,7 +72,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({}) => {
     setSearchValue(search);
     if (search !== "") {
       (async () => {
-        await fetch(`http://localhost:4000/post?q=${search}`)
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/post?q=${search}`)
           .then((response) => response.json())
           .then((res) => {
             setResults(res);

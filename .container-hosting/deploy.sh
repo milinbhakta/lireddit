@@ -161,33 +161,4 @@ amber exec -- sh -c ''"ssh $SSH_ARGS"' dokku@$DOKKU_HOST -C $CONTAINER_HOSTING_A
 # https://github.com/KarmaComputing/container-hosting/blob/91573f47cf0de5bbd3a35d7e8a7a019e184c2117/dokku-wrapper.py#L44
 #  
 
-echo Set app envrionment settings
-
-amber exec -- sh -c ''"ssh $SSH_ARGS"' dokku@$DOKKU_HOST -C $CONTAINER_HOSTING_API_KEY \
-    dokku config:set --no-restart $APP_NAME \
-    DB_USER=$DB_USER\
-    DB_PASSWORD=$DB_PASSWORD\
-    DB_HOST=$DB_HOST\
-    DB_PORT=$DB_PORT\
-    DB_NAME=$DB_NAME\
-    RAILS_DEVELOPMENT_HOSTS=$APP_NAME.containers.anotherwebservice.com\
-    DATABASE_URL=$RAILS_DATABASE_URL\
-    SECRET_KEY=$DJANGO_SECRET_KEY\
-    ALLOWED_HOSTS=$ALLOWED_HOSTS\
-    DEBUG=$DJANGO_DEBUG\
-    DB_ENGINE=$DJANGO_ENGINE\
-    DB_NAME=$DJANGO_DB_NAME\
-    DB_HOST=$DJANGO_DB_HOST\
-    DB_USER=$DJANGO_DB_USER\
-    DB_PASSWORD=$DJANGO_DB_PASSWORD\
-    DB_PORT=$DJANGO_DB_PORT'
-
-
-amber exec -- sh -c ''"ssh $SSH_ARGS"' dokku@$DOKKU_HOST -C $CONTAINER_HOSTING_API_KEY dokku git:sync --build $APP_NAME https://github.com/'"$GIT_USERNAME_OR_ORG"'/'"$GIT_REPO_NAME"'.git main'
-
-# Assign letsencrypt wildcard certificate
-# Note that SSH_ARGS are not stored in amber, which is why they are expanded
-# vs the rest (e.g. DOKKU_HOST and CONTAINER_HOSTING_API_KEY which are stored
-# within amber.yaml secrets
-amber exec -v --unmasked -- sh -c 'ssh '"$SSH_ARGS"' dokku@$DOKKU_HOST -C "$CONTAINER_HOSTING_API_KEY dokku certs:add $APP_NAME < cert-key.tar"'
 

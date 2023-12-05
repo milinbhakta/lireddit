@@ -95,7 +95,7 @@ const main = async () => {
     es.search({
       index: "post",
       q: `*${query}*`,
-      size: 3,
+      size: 5,
     })
       .then((result) => {
         res.json(result.hits.hits.map((hit) => hit._source));
@@ -145,8 +145,8 @@ const main = async () => {
     });
   });
 
-  app.listen(4000, () => {
-    console.log("server started on localhost:4000");
+  app.listen(process.env.PORT, () => {
+    console.log(`Server started on localhost:${process.env.PORT}`);
   });
 };
 

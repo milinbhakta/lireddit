@@ -11,3 +11,4 @@ web/.next
 web/out
 server/node_modules
 server/.vscode
+.env

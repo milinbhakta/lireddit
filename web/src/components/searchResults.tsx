@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     text: {
       width: "100%",
-      color: "black",
+      color: "white",
     },
   })
 );

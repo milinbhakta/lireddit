@@ -7,9 +7,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./data:/var/lib/postgresql/data
     restart: always
@@ -57,7 +57,7 @@ services:
   server:
     build: ./server
     ports:
-      - "4000:4000"
+      - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
       - ./server:/app
     depends_on:
@@ -66,15 +66,15 @@ services:
       elasticsearch:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
-      - REDIS_URL=redis://redis:6379
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - PORT=4000
-      - SESSION_SECRET=qowiueojwojfalksdjoqiwueo
-      - CORS_ORIGIN=http://localhost:3000
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+      ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
+      PORT: ${SERVER_PORT}
+      SESSION_SECRET: ${SESSION_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN}
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://server:4000/graphql"]
+      test: ["CMD", "curl", "-f", "http://server:${SERVER_PORT}/graphql"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -82,16 +82,17 @@ services:
   web:
     build: ./web
     ports:
-      - "3000:3000"
+      - ${WEB_PORT}:${WEB_PORT}
     volumes:
       - ./web:/app
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000/graphql
+      - NEXT_PUBLIC_API_URL=http://localhost:${SERVER_PORT}/graphql
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:${SERVER_PORT}
     depends_on:
       - server
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://web:3000"]
+      test: ["CMD", "curl", "-f", "http://web:${WEB_PORT}"]
       interval: 30s
       timeout: 10s
       retries: 5
