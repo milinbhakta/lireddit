@@ -31,6 +31,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     environment:
       - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - 9200:9200
     depends_on:
@@ -46,6 +47,8 @@ services:
     build: ./server/src/elasticsearch
     ports:
       - 9600:9600
+    environment:
+      - "LS_JAVA_OPTS=-Xms512m -Xmx512m"
     depends_on:
       - elasticsearch
     healthcheck:
@@ -79,20 +82,20 @@ services:
       timeout: 10s
       retries: 5
 
-  web:
-    build: ./web
-    ports:
-      - ${WEB_PORT}:${WEB_PORT}
-    volumes:
-      - ./web:/app
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:${SERVER_PORT}/graphql
-      - NEXT_PUBLIC_SERVER_URL=http://localhost:${SERVER_PORT}
-    depends_on:
-      - server
-    restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://web:${WEB_PORT}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+  # web:
+  #   build: ./web
+  #   ports:
+  #     - ${WEB_PORT}:${WEB_PORT}
+  #   volumes:
+  #     - ./web:/app
+  #   environment:
+  #     - NEXT_PUBLIC_API_URL=http://localhost:${SERVER_PORT}/graphql
+  #     - NEXT_PUBLIC_SERVER_URL=http://localhost:${SERVER_PORT}
+  #   depends_on:
+  #     - server
+  #   restart: always
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://web:${WEB_PORT}"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5

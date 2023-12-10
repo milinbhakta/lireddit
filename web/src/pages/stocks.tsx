@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import toast from "react-hot-toast";
+import { log } from "console";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,17 +42,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Stocks = () => {
   const classes = useStyles();
+  const ticker = "NVDA";
+
   const [series, setSeries] = useState([
     {
       data: [],
-      name: "GME",
+      name: ticker,
     },
   ]);
   const [price, setPrice] = useState(-1);
   const [prevPrice, setPrevPrice] = useState(-1);
   const [priceTime, setPriceTime] = useState<Date | null>(null);
 
-  const stonksUrl: string = "http://localhost:4000/AMZN";
+
+  const stonksUrl: string = `${process.env.NEXT_PUBLIC_SERVER_URL}/stocks/${ticker}`;
 
   const getStonks = async () => {
     const response = await fetch(stonksUrl);
@@ -72,11 +76,41 @@ const Stocks = () => {
     chart: {
       type: "candlestick",
       height: 350,
+      fontFamily: ["barlow", "san-serif"].join(","),
       background: "#fff",
+      foreColor: "black",
+      toolbar: {
+        show: false,
+      },
+    },
+    tooltip: {
+      enabled: true,
+      theme: "dark",
+      x: {
+        show: true,
+        format: "datetime",
+        formatter: (value: any) => {
+          return new Date(value).toLocaleTimeString();
+        },
+      },
+      y: {
+        formatter: undefined,
+        title: {
+          formatter: (seriesName: any) => seriesName,
+        },
+      },
+      z: {
+        formatter: undefined,
+        title: "Size: ",
+      },
     },
     title: {
       text: "CandleStick Chart",
       align: "left",
+      style: {
+        fontSize: "16px",
+        color: "#666",
+      },
     },
     xaxis: {
       type: "datetime",
@@ -84,6 +118,17 @@ const Stocks = () => {
     yaxis: {
       tooltip: {
         enabled: true,
+      },
+    },
+    plotOptions: {
+      candlestick: {
+        wick: {
+          useFillColor: true,
+        },
+        colors: {
+          upward: "#3C90EB",
+          downward: "#DF7D46",
+        },
       },
     },
   };
@@ -95,14 +140,15 @@ const Stocks = () => {
       try {
         const data = await getStonks();
 
-        const gme = data.chart.result[0];
+        const tickerData = data.chart.result[0];
+        console.log(tickerData);
         setPrevPrice(price);
-        setPrice(gme.meta.regularMarketPrice.toFixed(2));
+        setPrice(tickerData.meta.regularMarketPrice.toFixed(2));
         setPriceTime(
-          new Date((gme.meta.regularMarketTime * 1000) as unknown as number)
+          new Date((tickerData.meta.regularMarketTime * 1000) as unknown as number)
         );
-        const quote = gme.indicators.quote[0];
-        const prices = gme.timestamp.map((timestamp: any, index: any) => ({
+        const quote = tickerData.indicators.quote[0];
+        const prices = tickerData.timestamp.map((timestamp: any, index: any) => ({
           x: new Date(timestamp * 1000),
           y: [
             quote.open[index],
@@ -114,13 +160,17 @@ const Stocks = () => {
         setSeries([
           {
             data: prices,
-            name: "GME",
+            name: ticker,
           },
         ]);
       } catch (error) {
         console.log(error);
       }
-      toast.success("Got the Data!", { id: toastId });
+      toast.success("Got the Data!", {
+        id: toastId,
+        position: "bottom-center",
+        duration: 500,
+      });
       timeoutId = setTimeout(getLatestPrice, 5000 * 2);
     }
 
@@ -143,7 +193,7 @@ const Stocks = () => {
         <br />
         DO NOT USE THIS SITE AS FINANCIAL ADVICE!
       </div>
-      <div className={classes.ticker}>AMZN</div>
+      <div className={classes.ticker}>{ticker}</div>
       <div className={[classes.price, direction].join(" ")}>
         ${price} {directionEmojis[direction]}
       </div>
@@ -157,7 +207,7 @@ const Stocks = () => {
             series={series}
             type="candlestick"
             width="100%"
-            height={320}
+            height="350"
           />
         )}
       </div>

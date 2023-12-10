@@ -118,7 +118,7 @@ const main = async () => {
   });
 
   // get the stocks
-  app.get("/:ticker", async (req, res, next) => {
+  app.get("/stocks/:ticker", async (req, res, next) => {
     try {
       const { data } = await axios.get(
         `https://query1.finance.yahoo.com/v8/finance/chart/${req.params.ticker}`

@@ -10,6 +10,8 @@ COPY logstash.conf /logstash_dir/
 
 ENV LS_JAVA_OPTS="-Xmx256m -Xms256m"
 
+ENV ES_JAVA_OPTS="-Xms2g -Xmx2g"
+
 EXPOSE 9600
 
 CMD logstash -f /logstash_dir/logstash.conf

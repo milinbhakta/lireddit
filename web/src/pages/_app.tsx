@@ -41,7 +41,7 @@ export default function MyApp(props: AppProps) {
   return (
     <React.Fragment>
       <Head>
-        <title>My page</title>
+        <title>Lireddit</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

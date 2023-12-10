@@ -171,32 +171,6 @@ export const NavBar: React.FC<NavBarProps> = ({ children }) => {
     skip: isServer(),
   });
 
-  const icon = !theme ? <Brightness7Icon /> : <Brightness3Icon />;
-
-  const [mode, setMode] = React.useState<string | null>(null);
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const preferredMode = prefersDarkMode ? "dark" : "light";
-
-  React.useEffect(() => {
-    setMode("system");
-  }, [setMode]);
-
-  const handleChangeThemeMode = (checked: boolean) => {
-    let paletteMode = "system";
-    paletteMode = checked ? "dark" : "light";
-    if (paletteMode === null) {
-      return;
-    }
-
-    setMode(paletteMode);
-
-    if (paletteMode === "system") {
-      document.cookie = `paletteMode=;path=/;max-age=31536000`;
-    } else {
-      document.cookie = `paletteMode=${paletteMode};path=/;max-age=31536000`;
-    }
-  };
-
   useEffect(() => {
     const svgPath = document.querySelectorAll("polyline");
 
@@ -458,19 +432,8 @@ export const NavBar: React.FC<NavBarProps> = ({ children }) => {
           </Typography>
           <SearchBar />
           <div className={classes.sectionDesktop}>
-            <IconButton
-              edge="end"
-              color="inherit"
-              aria-label="mode"
-              onClick={() => {
-                mode === "system" ? prefersDarkMode : mode === "dark";
-                handleChangeThemeMode(true);
-              }}
-            >
-              {icon}
-            </IconButton>
             <Typography variant="h6" noWrap>
-              {data?.me?.username}
+              {data?.me?.username.toLocaleUpperCase()}
             </Typography>
             <IconButton onClick={handleProfileMenuOpen} color="inherit">
               <AccountCircle />

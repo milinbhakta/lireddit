@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       width: "100%",
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: alpha(theme.palette.primary.main, 0.65),
+      backgroundColor: theme.palette.background.paper,
       zIndex: 100,
     },
     main: {
