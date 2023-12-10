@@ -21,6 +21,8 @@ services:
 
   redis:
     image: redis:6.2.5-alpine
+    environment:
+      - "vm.overcommit_memory=1"
     ports:
       - "6379:6379"
     volumes:
@@ -31,7 +33,11 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     environment:
       - "discovery.type=single-node"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms128m -Xmx128m -server"
+      - "ES_HEAP_SIZE=128m"
+      - "MAX_LOCKED_MEMORY=1000"
+      - "./server/src/elasticSearch/elasticdata:/opt/elasticsearch/volatile/data"
+      - "./server/src/elasticSearch/elasticlogs:/opt/elasticsearch/volatile/logs"
     ports:
       - 9200:9200
     depends_on:
@@ -82,20 +88,20 @@ services:
       timeout: 10s
       retries: 5
 
-  # web:
-  #   build: ./web
-  #   ports:
-  #     - ${WEB_PORT}:${WEB_PORT}
-  #   volumes:
-  #     - ./web:/app
-  #   environment:
-  #     - NEXT_PUBLIC_API_URL=http://localhost:${SERVER_PORT}/graphql
-  #     - NEXT_PUBLIC_SERVER_URL=http://localhost:${SERVER_PORT}
-  #   depends_on:
-  #     - server
-  #   restart: always
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://web:${WEB_PORT}"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
+  web:
+    build: ./web
+    ports:
+      - ${WEB_PORT}:${WEB_PORT}
+    volumes:
+      - ./web:/app
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:${SERVER_PORT}/graphql
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:${SERVER_PORT}
+    depends_on:
+      - server
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://web:${WEB_PORT}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5

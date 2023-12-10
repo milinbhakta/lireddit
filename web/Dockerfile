@@ -1,16 +1,13 @@
-# Dockerfile for Server
+# Docker file for web
 
 # Use a specific version of node
-FROM node:14 AS builder
+FROM node:14.21.3 AS builder
 
 # Set the working directory
 WORKDIR /usr/src/app
 
 # Copy package.json and yarn.lock files
 COPY package.json yarn.lock ./
-
-# Set the registry
-RUN echo "registry \"https://registry.yarnpkg.com\"" > .yarnrc
 
 # Install dependencies
 RUN yarn install --frozen-lockfile
@@ -19,10 +16,10 @@ RUN yarn install --frozen-lockfile
 COPY . .
 
 # Build the app
-RUN yarn run build
+RUN yarn add next@^9.1.7 && yarn run build
 
-# Start a new stage from node 14.15.4-alpine
-FROM node:14
+# Start a new stage from node 14.21.3
+FROM node:14.21.3
 
 WORKDIR /usr/src/app
 
@@ -30,7 +27,7 @@ WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app .
 
 # Expose the port the app runs on
-EXPOSE 4000
+EXPOSE 3000
 
 # Start the app
 CMD ["yarn", "run", "start"]

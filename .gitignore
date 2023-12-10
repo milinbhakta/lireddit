@@ -3,7 +3,6 @@
 .vscode
 data
 redisdata
-web
 server/*
 web/node_modules
 web/.vscode
