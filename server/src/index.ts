@@ -21,6 +21,7 @@ import es from "./utils/elasticSearchClient";
 import Parser from "rss-parser";
 import { IChannel } from "./types";
 import axios from "axios";
+import path from "path";
 
 const main = async () => {
   const conn: Connection = await createConnection({
@@ -28,10 +29,10 @@ const main = async () => {
     url: process.env.DATABASE_URL,
     logging: true,
     // synchronize: true,
-    // migrations: [
-    //   path.join(__dirname, "./migrations/1597626060117-Initial.*"),
-    //   path.join(__dirname, "./migrations/1597424501158-MockPosts.*"),
-    // ],
+    migrations: [
+      // path.join(__dirname, "./migrations/1597626060117-Initial.*"),
+      path.join(__dirname, "./migrations/1597424501158-MockPosts.*"),
+    ],
     entities: [Post, User, Updoot],
   });
   await conn.runMigrations();
