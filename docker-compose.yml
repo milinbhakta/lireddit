@@ -1,18 +1,31 @@
 # Docker compose to run all the services and application both server and web
-version: "3.7"
+version: "3.9"
 
 services:
+  rabbitmq:
+    build: ./rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   postgres:
-    image: postgres:12.1-alpine
+    build: ./postgres
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - ./data:/var/lib/postgresql/data
-    restart: always
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+        restart: true
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 5s
@@ -25,42 +38,44 @@ services:
       - "vm.overcommit_memory=1"
     ports:
       - "6379:6379"
-    volumes:
-      - ./redisdata:/data
     restart: always
+    volumes:
+      - ./redis/data:/data
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     environment:
-      - "discovery.type=single-node"
-      - "ES_JAVA_OPTS=-Xms128m -Xmx128m -server"
-      - "ES_HEAP_SIZE=128m"
-      - "MAX_LOCKED_MEMORY=1000"
-      - "./server/src/elasticSearch/elasticdata:/opt/elasticsearch/volatile/data"
-      - "./server/src/elasticSearch/elasticlogs:/opt/elasticsearch/volatile/logs"
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
     ports:
       - 9200:9200
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+        restart: true
+    restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://elasticsearch:9200"]
-      interval: 30s
-      timeout: 10s
+      interval: 5s
+      timeout: 5s
       retries: 5
 
   logstash:
-    build: ./server/src/elasticsearch
+    build: ./logstash
     ports:
       - 9600:9600
     environment:
-      - "LS_JAVA_OPTS=-Xms512m -Xmx512m"
+      - CONFIG_SUPPORT_ESCAPE=true
+      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
     depends_on:
       - elasticsearch
+    restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://logstash:9600"]
-      interval: 30s
-      timeout: 10s
+      interval: 5s
+      timeout: 5s
       retries: 5
 
   server:
@@ -72,8 +87,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+        restart: true
       elasticsearch:
         condition: service_healthy
+        restart: true
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       REDIS_URL: redis://redis:6379
@@ -82,11 +99,6 @@ services:
       SESSION_SECRET: ${SESSION_SECRET}
       CORS_ORIGIN: ${CORS_ORIGIN}
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://server:${SERVER_PORT}/graphql"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   web:
     build: ./web
@@ -100,8 +112,3 @@ services:
     depends_on:
       - server
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://web:${WEB_PORT}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5

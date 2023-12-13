@@ -14,7 +14,6 @@ import cors from "cors";
 import { Connection, createConnection } from "typeorm";
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
-import path from "path";
 import { Updoot } from "./entities/Updoot";
 import { createUserLoader } from "./utils/createUserLoader";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
@@ -22,6 +21,7 @@ import es from "./utils/elasticSearchClient";
 import Parser from "rss-parser";
 import { IChannel } from "./types";
 import axios from "axios";
+import path from "path";
 
 const main = async () => {
   const conn: Connection = await createConnection({
@@ -30,7 +30,7 @@ const main = async () => {
     logging: true,
     // synchronize: true,
     migrations: [
-      path.join(__dirname, "./migrations/1597626060117-Initial.*"),
+      // path.join(__dirname, "./migrations/1597626060117-Initial.*"),
       path.join(__dirname, "./migrations/1597424501158-MockPosts.*"),
     ],
     entities: [Post, User, Updoot],

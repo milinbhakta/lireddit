@@ -1,7 +1,6 @@
 # ignore files
 
 .vscode
-data
 redisdata
 server/*
 web/node_modules
@@ -11,3 +10,8 @@ web/out
 server/node_modules
 server/.vscode
 .env
+redis
+.DS_Store
+*/.DS_Store
+*/.vscode
+*/.next
