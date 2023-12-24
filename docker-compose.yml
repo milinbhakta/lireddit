@@ -107,8 +107,8 @@ services:
     volumes:
       - ./web:/app
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:${SERVER_PORT}/graphql
-      - NEXT_PUBLIC_SERVER_URL=http://localhost:${SERVER_PORT}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
     depends_on:
       - server
     restart: always
