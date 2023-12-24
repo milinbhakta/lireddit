@@ -40,6 +40,8 @@ const main = async () => {
 
   const app = express();
 
+  const apiRouter = express.Router();
+
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
   app.set("trust proxy", 1);
@@ -85,11 +87,12 @@ const main = async () => {
 
   apolloServer.applyMiddleware({
     app,
+    path: "/api/graphql",
     cors: false,
   });
 
   // search the post
-  app.get("/post", (req, res) => {
+  apiRouter.get("/post", (req, res) => {
     const query: string = req.query.q as string;
 
     es.search({
@@ -106,7 +109,7 @@ const main = async () => {
   });
 
   // get the rss feed
-  app.get("/news", async (_req, res) => {
+  apiRouter.get("/news", async (_req, res) => {
     const parser: Parser<IChannel> = new Parser({});
 
     (async () => {
@@ -118,7 +121,7 @@ const main = async () => {
   });
 
   // get the stocks
-  app.get("/stocks/:ticker", async (req, res, next) => {
+  apiRouter.get("/stocks/:ticker", async (req, res, next) => {
     try {
       const { data } = await axios.get(
         `https://query1.finance.yahoo.com/v8/finance/chart/${req.params.ticker}`
@@ -130,6 +133,8 @@ const main = async () => {
       next(error);
     }
   });
+
+  app.use("/api", apiRouter);
 
   app.use((req, res, next) => {
     const error = new Error(`Not Found - ${req.originalUrl}`);
