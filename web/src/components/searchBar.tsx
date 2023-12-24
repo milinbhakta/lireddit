@@ -62,6 +62,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({}): any => {
   const [searchValue, setSearchValue] = useState("");
   const [active, setActive] = useState(false);
 
+  const searchUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/post?q=`;
+
   const optionClicked = (clicked: boolean) => {
     setActive(clicked);
     setSearchValue("");
@@ -72,7 +74,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({}): any => {
     setSearchValue(search);
     if (search !== "") {
       (async () => {
-        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/post?q=${search}`)
+        await fetch(`${searchUrl}${search}`)
           .then((response) => response.json())
           .then((res) => {
             setResults(res);

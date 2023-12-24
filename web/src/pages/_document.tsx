@@ -12,6 +12,7 @@ export default class MyDocument extends Document {
             href="https://fonts.bunny.net/css?family=barlow:100,400,500,500i,600,600i,700"
             rel="stylesheet"
           />
+          <base href="/lireddit" />
         </Head>
         <body>
           <Main />

@@ -51,6 +51,7 @@ export default function MyApp(props: AppProps) {
           href="https://fonts.bunny.net/css?family=barlow:100,400,500,500i,600,600i,700"
           rel="stylesheet"
         />
+        <base href="/lireddit" />
       </Head>
 
       <ThemeProvider theme={theme}>
