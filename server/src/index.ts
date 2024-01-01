@@ -134,6 +134,10 @@ const main = async () => {
     }
   });
 
+  apiRouter.get("/health", (_req, res) => {
+    res.send("OK");
+  });
+
   app.use("/api", apiRouter);
 
   app.use((req, res, next) => {
